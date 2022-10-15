@@ -6,15 +6,15 @@
       <div class="container">
         <h3 class="fw-bolder">Courses</h3>
         
-        <div class="row" v-if="courses">
+        <div class="spinner" v-show="courses == ''">
    
-            <CourseItem v-for="course in courses" :key="course.id" :course="course"></CourseItem>
-           
+          <ring-loader :loading="loading" :color="color" :size="size"></ring-loader>
+          
+        </div>
+        <div class="row" v-show="courses">
+          <CourseItem v-for="course in courses" :key="course.id" :course="course"></CourseItem>
+        </div>
         
-        </div>
-        <div class="spenner" v-else>
-          loading...
-        </div>
       </div>
     </section>
 
@@ -26,9 +26,10 @@
 import Header from '../components/Header.vue'
 import Footer from '../components/Footer.vue'
 import CourseItem from '../components/CourseItem.vue'
+import RingLoader from 'vue-spinner/src/RingLoader.vue'
 import http from 'axios'
 export default {
-  components: { Header, Footer, CourseItem },
+  components: { Header, Footer, CourseItem, RingLoader },
   data(){
     return {
       courses: []
@@ -37,7 +38,9 @@ export default {
  methods: {
    async getCourses(){
       await http.get('http://shikhi.test/api/courses').then((res)=>{
-          this.courses = res.data.courses;
+          setTimeout(()=>{
+            this.courses = res.data.courses;
+          },1000);
           // console.log(res.data.courses);
       });
     }
@@ -49,5 +52,9 @@ export default {
 </script>
 
 <style>
-
+    .spinner {
+    display: flex;
+    justify-content: center;
+    padding: 40px;
+}
 </style>
